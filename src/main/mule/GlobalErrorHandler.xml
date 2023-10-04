@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<error-handler name="error-db-Error_Handler" doc:id="f246b2bf-3cbd-49c6-a2bf-678b3a0bfc4f" >
+
+            <on-error-propagate type="APIKIT:BAD_REQUEST">
+                <set-variable value='#[{"statusCode": "400",&#10;	"message": "Bad request"&#10;}]' doc:name="httpStatus-400" doc:id="319a9981-29a1-4de7-bfeb-34818e701f01" variableName="Status"/>
+			<flow-ref doc:name="Flow Reference" doc:id="d52dc642-e198-4633-a83a-91faf77f255f" name="error-framework-db-Sub_Flows"/>
+            
+</on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_FOUND">
+                <set-variable value='#[{"statusCode": "404",&#10;	"message": "Resource not found"&#10;}]' doc:name="httpStatus-404" doc:id="fa814c30-1202-451c-9df0-15c5908f8eed" variableName="Status"/>
+			<flow-ref doc:name="Flow Reference" doc:id="916fddb3-2bd0-4bad-8baf-d0d82c2889ff" name="error-framework-db-Sub_Flows"/>
+            
+</on-error-propagate>
+            <on-error-propagate type="APIKIT:METHOD_NOT_ALLOWED">
+                <set-variable doc:name="httpStatus-405" doc:id="b2a0c461-b3b3-4ad3-a2e9-5044dc79b957" variableName="Status" value='#[{"statusCode": "405",&#10;	"message": "Method not allowed"&#10;}]'/>
+			<flow-ref doc:name="Flow Reference" doc:id="dad024e5-555a-4428-90c3-b1ba040b3c48" name="error-framework-db-Sub_Flows"/>
+            
+</on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_ACCEPTABLE">
+                <set-variable value='#[{"statusCode": "406",&#10;	"message": "Not acceptable"&#10;}]' doc:name="httpStatus-406" doc:id="f8bbd7c3-c322-4a30-aa6c-447ec9dfd2f2" variableName="Status"/>
+			<flow-ref doc:name="Flow Reference" doc:id="3284b3fa-56cd-4cac-b4d0-52dd89542e2c" name="error-framework-db-Sub_Flows"/>
+            
+</on-error-propagate>
+            <on-error-propagate type="APIKIT:UNSUPPORTED_MEDIA_TYPE">
+                <set-variable value='#[{"statusCode": "415",&#10;	"message": "Unsupported media type"&#10;}]' doc:name="httpStatus-415" doc:id="e153fb44-3328-4a29-9656-cb05dad76854" variableName="Status"/>
+			<flow-ref doc:name="Flow Reference" doc:id="3eb8443b-29d7-4e04-87e2-87087482bdd5" name="error-framework-db-Sub_Flows"/>
+            
+</on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_IMPLEMENTED">
+                <set-variable value='#[{"statusCode": "501",&#10;	"message": "Not Implemented"&#10;}]' doc:name="httpStatus-501" doc:id="bc4932a0-ad4e-445d-b43e-847521ebde77" variableName="Status"/>
+			<flow-ref doc:name="Flow Reference" doc:id="18d2b547-0b75-4a2d-bd2e-a671d5bd2829" name="error-framework-db-Sub_Flows"/>
+            
+</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="1d832935-dfb9-475e-8037-20ca232afb0e" type="DB:BAD_SQL_SYNTAX">
+			<set-variable value='#[{"statusCode": "500",&#10;	"message": error.errorType.identifier&#10;}]' doc:name="httpStatus-500" doc:id="0f3a7ba6-fde0-44b1-a6bb-8bcd66f2217d" variableName="Status"/>
+			<flow-ref doc:name="Flow Reference" doc:id="5301eb97-118f-4e91-9ca4-caba143b0677" name="error-framework-db-Sub_Flows"/>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="cea2b467-6350-4717-82a5-2c392028767f" type="DB:CONNECTIVITY">
+			<set-variable value='#[{"statusCode": "500",&#10;	"message": error.errorType.identifier&#10;}]' doc:name="httpStatus-500" doc:id="f6f72d8c-6544-4838-9e16-e80da60a7f0d" variableName="Status"/>
+			<flow-ref doc:name="Flow Reference" doc:id="c59ffd00-1d87-4123-b641-095f81fc1693" name="error-framework-db-Sub_Flows"/>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="2a130e67-ed01-4f8d-b8a4-0d1428c14efc" type="DB:QUERY_EXECUTION">
+			<set-variable value='#[{"statusCode": "500",&#10;	"message": error.errorType.identifier&#10;}]' doc:name="httpStatus-500" doc:id="389f06ce-96a8-4bf9-aefb-4d839694660f" variableName="Status"/>
+			<flow-ref doc:name="Flow Reference" doc:id="1360f1a3-271c-4116-9ef8-4c4cb5b8f444" name="error-framework-db-Sub_Flows"/>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="8b23bd4f-82d2-4cee-b289-655105185b9a" type="DB:RETRY_EXHAUSTED">
+			<set-variable value='#[{"statusCode": "500",&#10;	"message": error.errorType.identifier&#10;}]' doc:name="httpStatus-500" doc:id="f269f316-b480-4829-90ab-7b185643a5a8" variableName="Status"/>
+			<flow-ref doc:name="Flow Reference" doc:id="160db45e-bd20-450d-96b8-f9514d3abbf9" name="error-framework-db-Sub_Flows"/>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="7d5bf0ea-2227-4754-9dd9-2565dcba581c" type="ANY">
+			<set-variable value='#[{"statusCode": "500",&#10;	"message": error.errorType.identifier&#10;}]' doc:name="httpStatus-500" doc:id="97467140-229e-40c3-8469-af1fdec4fcb5" variableName="Status"/>
+			<flow-ref doc:name="Flow Reference" doc:id="1ee16a61-5846-46e0-b13a-aae95fc29735" name="error-framework-db-Sub_Flows"/>
+		</on-error-propagate>
+        
+</error-handler>
+	<sub-flow name="error-framework-db-Sub_Flows" doc:id="c574fadf-5c03-48ef-89cb-864dcc9682ca" >
+		<ee:transform doc:name="Transform Message" doc:id="5f95364d-45f0-4ddc-ac19-f3a701c2b57a" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"errorType": error.errorType.asString as String,
+	"errorCause": error.description as String,
+	"statusCode": vars.Status.statusCode,
+	"errorMessage": vars.Status.message
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="httpStatus" ><![CDATA[vars.Status.statusCode]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+	</sub-flow>
+
+</mule>
